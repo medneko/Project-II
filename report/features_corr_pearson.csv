@@ -1,0 +1,4 @@
+,sentiment_mean,sentiment_count,news_density
+sentiment_mean,1.0,-0.00745902060204241,
+sentiment_count,-0.00745902060204241,1.0,
+news_density,,,

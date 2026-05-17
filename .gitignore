@@ -1,0 +1,23 @@
+# Ignore raw data and large artifacts
+data/
+TODO-data
+
+# Python envs
+.venv/
+venv/
+
+# Bytecode
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Logs and local secrets
+*.log
+.env
+.env.*
+secrets*.yml
