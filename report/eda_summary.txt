@@ -1,0 +1,84 @@
+EDA — Tóm tắt (Tiếng Việt)
+Ngày: 2026-05-18
+
+1) Mục tiêu
+- Tổng hợp kết quả EDA đã chạy (chế độ không tương tác) và liệt kê các tệp/artifacts sinh ra; rút ra kết luận sơ bộ và đề xuất bước tiếp theo.
+
+2) Dữ liệu (tóm tắt)
+- Sample news (khi chạy một số bước thử nghiệm): shape=(2000, 3)
+	- `headline_clean`: str
+	- `ticker`: float64
+	- `date`: str
+	- Missing rates (sample): `ticker`=1.0, `headline_clean`=0.0, `date`=0.0
+	- Duplicates (sample): 42
+
+- Sample features (khi chạy mẫu): shape=(2000, 5)
+	- `ticker`: str
+	- `date`: str
+	- `sentiment_mean`: float64
+	- `sentiment_count`: int64
+	- `news_density`: int64
+	- Missing rates (sample): tất cả 0. Duplicates (sample): 0
+
+- Kết quả kiểm tra trên file đầy đủ `data/features_aggregated.csv` (đã đọc):
+	- Số lượng bản ghi: 5787
+	- `sentiment_mean`: count=5787, mean≈0.272853, std≈0.962139, min=-1.0, 25%=-1.0, 50%=1.0, 75%=1.0, max=1.0
+	- `sentiment_count`: count=5787, phân bố: 1 → 5783, 2 → 4
+	- `news_density`: tất cả giá trị = 0 (5787/5787) — không có biến thiên
+
+3) Embeddings
+- `data/embeddings_clean.npy`: shape ≈ (1_845_559, 768)
+- Norms (tham khảo): min≈7.7650, mean≈10.8602, max≈14.6643
+- PCA plot (sample): `report/emb_pca.png`
+
+4) Tương quan (Correlation)
+- Pearson(`sentiment_mean`, `sentiment_count`) ≈ -0.00746 (gần 0 — không tương quan tuyến tính)
+- Spearman ≈ -0.00746 (không tương quan đơn điệu)
+- `news_density` không xác định hệ số tương quan (NaN) do biến ít/không biến thiên
+- Tệp kết quả: `report/features_corr.png`, `report/features_corr_annot.png`, `report/features_corr_pearson.csv`, `report/features_corr_spearman_annot.png`, `report/features_corr_spearman.csv`
+
+5) Phân cụm (mẫu)
+- Phương pháp: giảm chiều (PCA/UMAP) trên mẫu → `HDBSCAN`
+- Kết quả (mẫu): counts = {5: 4508, -1: 119, 3: 117, 4: 71, 1: 70, 0: 64, 2: 51}
+- Silhouette (loại trừ noise -1) ≈ 0.58288 (tính trên không gian 2D giảm chiều — tham khảo)
+- Nhãn cụm mẫu: `report/cluster_labels_sample.csv`
+
+6) Các tệp/artifacts đã sinh (đã lưu trong `report/`)
+- `report/eda_summary.txt` (file này)
+- `report/top_tokens.csv`
+- `report/text_length.png`
+- `report/features_describe.csv`
+- `report/features_corr.png`, `report/features_corr_annot.png`, `report/features_corr_pearson.csv`, `report/features_corr_spearman_annot.png`, `report/features_corr_spearman.csv`
+- `report/emb_pca.png`
+- `report/cluster_labels_sample.csv`
+- `report/sentiment_mean_hist.png`
+- `report/sentiment_count_bar.png`
+- `report/news_density_bar.png`
+- `report/sentiment_scatter.png`
+- `report/news_density_value_counts.csv`
+- `report/sentiment_count_value_counts.csv`
+- `report/features_value_counts.csv`
+
+7) Kết luận sơ bộ & khuyến nghị
+- `news_density` hiện không có biến thiên (mọi giá trị = 0): cần kiểm tra lại cách tính. Gợi ý: tính lại `news_density` theo nhóm (theo `ticker`/ngày) hoặc theo cửa sổ thời gian (ví dụ 24h, 7 ngày) để có biến thiên hữu ích cho phân tích.
+- `sentiment_count` có biến thiên rất nhỏ (hầu hết = 1). Nếu mục tiêu là đánh giá mật độ/tần suất, nên mở rộng cửa sổ aggregate (gộp theo ngày/ticker) để tăng biến thiên.
+- `sentiment_mean` có phân bố rời rạc với nhiều giá trị -1 và 1; cần xem lại pipeline tính sentiment (mapping threshold) hoặc dùng trung bình theo cửa sổ lớn hơn.
+- Với embeddings rất lớn, khi đánh giá clustering nên tính metric trong không gian gốc (hoặc dùng nhiều metric: Silhouette, Davies–Bouldin, Coverage, Stability/ARI). Không nên chỉ dựa vào silhouette trên 2D.
+
+8) Lệnh để tái tạo (PowerShell)
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/Activate.ps1"
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" -m pip install -r requirements.txt
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" scripts/convert_embeddings.py --infile data/embeddings.npy --outfile data/embeddings_clean.npy
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" scripts/eda.py
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" scripts/text_eda.py
+```
+
+9) Bước tiếp theo (gợi ý)
+- Nếu bạn muốn, tôi có thể:
+	- (A) Điều chỉnh cách tính `news_density` (theo ticker/ngày hoặc cửa sổ) và chạy lại EDA tự động.
+	- (B) Chạy grid experiments cho UMAP/HDBSCAN và lưu bảng metrics để so sánh cấu hình.
+	- (C) Cài thêm `spacy` / `wordcloud` và chạy NER/wordcloud trong `scripts/text_eda.py`.
+
+Kết thúc tóm tắt.
