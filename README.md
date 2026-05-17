@@ -1,68 +1,111 @@
-Data pipeline for news + sentiment -> multimodal vectors
+Luồng xử lý dữ liệu cho tin tức và sentiment → biểu diễn đa thể thức
 
-Quickstart
+Bắt đầu nhanh
 
-1. (Optional) create and activate the virtualenv used by the project.
-2. Install dependencies:
+1. (Tùy chọn) tạo và kích hoạt virtualenv (môi trường ảo) cho dự án.
+2. Cài đặt phụ thuộc:
 
 ```powershell
 & "c:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" -m pip install -r requirements.txt
 ```
 
-3. Preprocess news:
+3. Tiền xử lý dữ liệu tin tức:
 
 ```powershell
 & "c:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" scripts/preprocess.py --input data/raw_partner_headlines.csv --output data/news_clean.csv
 ```
 
-4. Extract features (aggregated sentiment + news density):
+4. Trích xuất đặc trưng (sentiment tổng hợp + mật độ tin tức):
 
 ```powershell
 & "c:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" scripts/feature_engineering.py --sentiment data/stock_data.csv --news data/news_clean.csv --output data/features_aggregated.csv
 ```
 
-5. Compute embeddings (FinBERT) — may be slow on CPU:
+5. Tính embeddings (FinBERT) — có thể chậm khi chạy trên CPU:
 
 ```powershell
 & "c:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" scripts/embeddings.py --news data/news_clean.csv --out_emb data/embeddings.npy --out_meta data/embeddings_meta.csv
 ```
 
-6. Fuse & cluster:
+6. Hợp nhất & phân cụm:
 
 ```powershell
 & "c:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" scripts/fuse_and_cluster.py --emb data/embeddings.npy --meta data/embeddings_meta.csv --features data/features_aggregated.csv --out data/fused_clusters.csv --k 10
 ```
 
-Notes
-- The scripts try to auto-detect common column names but may need small edits depending on your CSV schemas.
-- Embedding step uses `ProsusAI/finbert` and will download the model from Hugging Face on first run.
+Ghi chú
+- Các script cố gắng tự động nhận diện tên cột phổ biến nhưng có thể cần chỉnh sửa nhỏ tùy theo schema CSV của bạn.
+- Bước tính embedding sử dụng `ProsusAI/finbert` và sẽ tải mô hình từ Hugging Face khi chạy lần đầu.
 
-## Multimodal clustering pipeline / Pipeline phân cụm đa thể thức
+## Quy trình phân cụm đa thể thức
 
 ### Tổng quan
-Pipeline tích hợp nhiều modal (text embeddings từ news/headlines, numeric features từ stock/sentiment, và metadata) để sinh biểu diễn hợp nhất và thực hiện phân cụm nhằm nhóm các bản tin / sự kiện theo chủ đề hoặc ảnh hưởng thị trường.
+Quy trình tích hợp nhiều modal (embedding văn bản từ tin tức/headlines, đặc trưng số từ stock/sentiment, và metadata) để sinh biểu diễn hợp nhất và thực hiện phân cụm, nhằm nhóm các bản tin/sự kiện theo chủ đề hoặc theo ảnh hưởng đến thị trường.
 
 ### Các bước chính
-- Inventory & QC: kiểm tra modal có sẵn, tỉ lệ missing, đồng bộ thời gian. Tham khảo [data/news_clean.csv](data/news_clean.csv) và [data/features_aggregated.csv](data/features_aggregated.csv).
-- Tiền xử lý: clean text, dedup, impute và scale numeric features.
-- Trích xuất embedding: text → sentence-transformers (vd. `all-MiniLM-L6-v2` hoặc FinBERT cho domain), numeric → scaled vectors hoặc autoencoder.
-- Fusion: early fusion (concat → projection MLP) hoặc late fusion (ensemble). Xử lý missing modal bằng masking/imputation.
-- Giảm chiều & index: dùng `PCA`/`UMAP` cho trực quan, lưu index ANN bằng `faiss` cho truy vấn nhanh.
-- Phân cụm: baseline `KMeans`; khuyến nghị thử `HDBSCAN` cho mật độ biến thiên; so sánh `GMM`/Agglomerative.
-- Đánh giá & giải thích: Silhouette, Davies–Bouldin, Coverage, Stability (ARI giữa subsamples), và kiểm tra qualitative (top keywords per cluster).
-- Triển khai reproducible: track experiments (MLflow/W&B), version data (DVC), containerize (Docker).
+- Khảo sát & QC: kiểm tra modal có sẵn, tỉ lệ missing, đồng bộ thời gian. Tham khảo [data/news_clean.csv](data/news_clean.csv) và [data/features_aggregated.csv](data/features_aggregated.csv).
+- Tiền xử lý: làm sạch văn bản, loại trùng (dedup), impute và chuẩn hóa (scale) các đặc trưng số.
+- Trích xuất embedding: văn bản → sentence-transformers (vd. `all-MiniLM-L6-v2` hoặc FinBERT cho domain), numeric → vector đã chuẩn hóa hoặc autoencoder.
+- Kết hợp đặc trưng (fusion): early fusion (concat → projection MLP) hoặc late fusion (ensemble). Xử lý modal thiếu bằng masking hoặc imputation.
+- Giảm chiều & index: dùng `PCA`/`UMAP` cho trực quan, lưu index ANN bằng `faiss` cho truy vấn hiệu quả.
+- Phân cụm: baseline `KMeans`; khuyến nghị thử `HDBSCAN` cho trường hợp mật độ thay đổi; so sánh với `GMM`/Agglomerative.
+- Đánh giá & giải thích: Silhouette, Davies–Bouldin, Coverage, Stability (ARI giữa các mẫu con), và kiểm tra định tính (top keywords cho mỗi cụm).
+- Triển khai có thể tái tạo: theo dõi thử nghiệm (MLflow/W&B), quản lý phiên bản dữ liệu (DVC), đóng gói bằng container (Docker).
 
 ### Mục tiêu phân cụm (cụ thể, đo lường được)
 - Silhouette score: tối thiểu ≥ 0.15 (baseline); mục tiêu tốt ≥ 0.25.
 - Coverage (tỉ lệ items được gán cụm): ≥ 90%.
 - Stability: ARI giữa các subsamples ≥ 0.7.
-- Nếu có ground-truth labels: ARI/NMI ≥ 0.35 (conservative), hướng tới ≥ 0.5.
-- Business impact: giảm thời gian gán nhãn thủ công ít nhất 30% khi dùng cụm để sample.
+- Nếu có nhãn chuẩn: ARI/NMI ≥ 0.35 (ngưỡng bảo thủ), hướng tới ≥ 0.5.
+- Tác động nghiệp vụ: giảm thời gian gán nhãn thủ công ít nhất 30% khi dùng cụm để lấy mẫu (sampling).
 
-### Quick prototype
+### Mẫu thử nghiệm nhanh
 Bạn có thể bắt đầu bằng pipeline đơn giản: trích text-embedding từ [scripts/embeddings.py](scripts/embeddings.py), nối với [data/features_aggregated.csv](data/features_aggregated.csv), rồi chạy [scripts/fuse_and_cluster.py](scripts/fuse_and_cluster.py) (tham số `--k` hoặc cấu hình HDBSCAN).
 
-### Next steps
-- Chạy thử một experiment prototype (notebook/script) với sample nhỏ để kiểm tra metrics trên thực tế.
-- Nếu đồng ý, tôi có thể: (A) viết notebook prototype, (B) cài đặt script pipeline modular, hoặc (C) chạy thử experiment mẫu và báo cáo kết quả.
+## EDA — Kết quả nhanh & tệp sinh ra
+
+Tôi đã chạy EDA ở chế độ không tương tác và sinh các báo cáo mẫu trong thư mục `report/`. Tóm tắt chính:
+
+- **Embeddings**: chuyển file raw `data/embeddings.npy` → numeric NumPy `data/embeddings_clean.npy` (shape ≈ 1,845,559 × 768) để xử lý hiệu quả và tránh chạy hết RAM.
+
+- **Báo cáo EDA**: [report/eda_summary.txt](report/eda_summary.txt)
+- **Các tệp sinh ra**:
+	- [report/eda_summary.txt](report/eda_summary.txt) — tổng quan (text)
+	- [report/features_describe.csv](report/features_describe.csv) — thống kê đặc trưng số
+	- [report/features_corr.png](report/features_corr.png) — ma trận tương quan
+	- [report/top_tokens.csv](report/top_tokens.csv) — token phổ biến (mẫu văn bản)
+	- [report/text_length.png](report/text_length.png) — phân phối độ dài headline
+	- [report/emb_pca.png](report/emb_pca.png) — PCA(2) trên mẫu embeddings
+	- [report/cluster_labels_sample.csv](report/cluster_labels_sample.csv) — nhãn cụm trên mẫu
+	- `data/embeddings_clean.npy` — embeddings đã chuyển sang float32 ndarray
+
+- **Kết quả clustering mẫu**: chạy baseline (UMAP/PCA → HDBSCAN) trên mẫu cho silhouette ≈ 0.58 và coverage ≈ 97% (tham khảo `report/cluster_labels_sample.csv`). Lưu ý: silhouette được tính trên không gian 2D giảm chiều, chỉ mang tính tham khảo.
+
+## Cách chạy lại EDA & chuyển embeddings (PowerShell)
+1) Kích hoạt virtualenv (nếu cần):
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/Activate.ps1"
+```
+
+2) Cài phụ thuộc (matplotlib, seaborn, umap-learn, hdbscan):
+```powershell
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" -m pip install --upgrade pip
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" -m pip install matplotlib seaborn umap-learn hdbscan
+```
+Nếu `hdbscan` khó cài trên Windows, dùng `conda install -c conda-forge hdbscan umap-learn`.
+
+3) (Nếu cần) chuyển embeddings raw sang `.npy` có header:
+```powershell
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" scripts/convert_embeddings.py --infile data/embeddings.npy --outfile data/embeddings_clean.npy
+```
+
+4) Chạy EDA ở chế độ không tương tác (sinh `report/`):
+```powershell
+& "C:/Users/ADMIN/Desktop/Project 2/.venv/Scripts/python.exe" scripts/eda.py
+```
+
+## Ghi chú & bước tiếp theo
+- Silhouette trên báo cáo là chỉ số tham khảo vì được tính trên không gian giảm chiều; để đánh giá chính xác, chạy metrics trong không gian gốc hoặc dùng nhiều metric (Coverage, Stability/ARI, Davies–Bouldin).
+- Đề xuất tiếp theo: (A) grid experiments cho UMAP/HDBSCAN và lưu metrics, (B) text EDA nâng cao (TF‑IDF, n‑grams, NER), (C) merge `news` ↔ `features` theo `date`/`ticker` và xử lý duplicates, (D) theo dõi thử nghiệm (MLflow/DVC) và xây pipeline có thể tái tạo.
 
