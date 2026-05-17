@@ -51,6 +51,24 @@ Quy trình tích hợp nhiều modal (embedding văn bản từ tin tức/headli
 - Phân cụm: baseline `KMeans`; khuyến nghị thử `HDBSCAN` cho trường hợp mật độ thay đổi; so sánh với `GMM`/Agglomerative.
 - Đánh giá & giải thích: Silhouette, Davies–Bouldin, Coverage, Stability (ARI giữa các mẫu con), và kiểm tra định tính (top keywords cho mỗi cụm).
 - Triển khai có thể tái tạo: theo dõi thử nghiệm (MLflow/W&B), quản lý phiên bản dữ liệu (DVC), đóng gói bằng container (Docker).
+-
+### Mục đích phân cụm
+
+- Mục tiêu chính: gom nhóm các headline/tin tức tương đồng về nội dung hoặc về tác động tới thị trường để hỗ trợ khám phá chủ đề, lấy mẫu gán nhãn hiệu quả, phát hiện sự kiện/ngoại lệ và hỗ trợ truy xuất thông tin (semantic retrieval).
+
+- Căn cứ từ EDA hiện tại: embeddings văn bản (file `data/embeddings_clean.npy`) là nguồn thông tin chính; các đặc trưng số hiện tại ít hoặc không có biến thiên hữu ích (ví dụ `news_density` = 0 cho hầu hết bản ghi; `sentiment_count` hầu hết = 1). Vì vậy, ưu tiên tiến hành phân cụm trên không gian embedding văn bản và chỉ fuse các đặc trưng số sau khi đã aggregate/chuẩn hóa.
+
+- Chiến lược kỹ thuật ngắn:
+	- Dùng text embeddings làm input chính; aggregate `sentiment_mean`/`sentiment_count` theo `ticker`/`date` hoặc theo cửa sổ thời gian trước khi fuse, nếu cần.
+	- Dùng `HDBSCAN` làm baseline cho trường hợp mật độ biến thiên; so sánh với `KMeans`/`GMM` theo metric đã chọn.
+	- Lưu index ANN (ví dụ `faiss`) để scale cho truy vấn gần đúng.
+	- Đánh giá metric trên không gian gốc (cosine) hoặc metric tương ứng, không chỉ dựa trên visual 2D (UMAP/PCA).
+
+- KPI tóm tắt:
+	- Coverage (tỉ lệ items được gán cụm) ≥ 90%.
+	- Silhouette baseline ≥ 0.15 (tốt ≥ 0.25).
+	- Stability (ARI giữa các subsamples) ≥ 0.7.
+	- Business: giảm thời gian gán nhãn thủ công ≥ 30% khi dùng cụm để lấy mẫu.
 
 ### Mục tiêu phân cụm (cụ thể, đo lường được)
 - Silhouette score: tối thiểu ≥ 0.15 (baseline); mục tiêu tốt ≥ 0.25.
