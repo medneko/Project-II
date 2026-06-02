@@ -51,7 +51,33 @@ Quy trình tích hợp nhiều modal (embedding văn bản từ tin tức/headli
 - Phân cụm: baseline `KMeans`; khuyến nghị thử `HDBSCAN` cho trường hợp mật độ thay đổi; so sánh với `GMM`/Agglomerative.
 - Đánh giá & giải thích: Silhouette, Davies–Bouldin, Coverage, Stability (ARI giữa các mẫu con), và kiểm tra định tính (top keywords cho mỗi cụm).
 - Triển khai có thể tái tạo: theo dõi thử nghiệm (MLflow/W&B), quản lý phiên bản dữ liệu (DVC), đóng gói bằng container (Docker).
--
+
+### Thuật toán & Độ đo đề xuất
+
+**Thuật toán phân cụm đề xuất**
+- Nhóm phân cấp (Hierarchical): Single Linkage, Ward’s Linkage
+- Nhóm dựa trên tâm cụm: K-means (với nhiều giá trị k), K-Medoids (PAM)
+- Nhóm dựa trên mật độ: DBSCAN, HDBSCAN
+- Nhóm xác suất: Gaussian Mixture Models (GMM)
+
+**Độ đo đánh giá đề xuất**
+- Độ đo nội tại:
+	- Silhouette Coefficient (ưu tiên tính với khoảng cách cosine cho embedding)
+	- Davies–Bouldin Index (DBI)
+- Độ đo đa thể thức:
+	- Cross-modal Consensus — so sánh mức độ đồng thuận giữa clustering chỉ trên văn bản và clustering trên dữ liệu tích hợp (ví dụ dùng Adjusted Rand Index hoặc NMI)
+- Độ đo định tính:
+	- Topic Modeling (LDA) để kiểm tra tính rõ rệt và diễn giải các chủ đề chính trong từng cụm
+
+### Pipeline thực thi (tóm tắt)
+- Bước 1 — Chuẩn bị dữ liệu: load embeddings từ `data/embeddings_clean.npy` (memmap khi cần), load metadata/đặc trưng từ `data/features_aggregated.csv` và thực hiện aggregation theo `ticker`/`date` nếu cần.
+- Bước 2 — Chạy nhiều thuật toán phân cụm theo cấu hình (k, các siêu tham số) và lưu nhãn cụm (CSV) cùng biểu đồ trực quan hóa (PCA/UMAP).
+- Bước 3 — Tính độ đo nội tại (Silhouette, DBI) trên mẫu (sampling nếu dataset lớn) trong không gian gốc (cosine cho embeddings).
+- Bước 4 — Nếu có modal numeric, chạy clustering trên modal đó và tính Cross-modal Consensus (ARI/NMI) giữa hai phân cụm.
+- Bước 5 — Định tính: chạy LDA trên văn bản của từng cụm, lưu top keywords để đánh giá interpretability.
+- Bước 6 — Lưu bảng kết quả `report/clustering_results.csv` và các file nhãn `report/cluster_labels_<algo>_<param>.csv`.
+- Gợi ý: với dữ liệu lớn, dùng `MiniBatchKMeans`, indexing ANN (`faiss`) cho truy vấn, và sample ngẫu nhiên (ví dụ 10k) để tính các metric tốn kém.
+
 ### Mục đích phân cụm
 
 - Mục tiêu chính: gom nhóm các headline/tin tức tương đồng về nội dung hoặc về tác động tới thị trường để hỗ trợ khám phá chủ đề, lấy mẫu gán nhãn hiệu quả, phát hiện sự kiện/ngoại lệ và hỗ trợ truy xuất thông tin (semantic retrieval).
