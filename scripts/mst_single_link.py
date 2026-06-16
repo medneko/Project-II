@@ -44,6 +44,7 @@ def build_symmetric_coo_from_knn(indices, dists):
 def mst_cut_clusters(A_sparse_coo, n_clusters):
     n = A_sparse_coo.shape[0]
     A_csr = A_sparse_coo.tocsr()
+    initial_components, _ = connected_components(A_csr, directed=False)
     mst = minimum_spanning_tree(A_csr)
     mst = mst.tocoo()
 
@@ -57,8 +58,16 @@ def mst_cut_clusters(A_sparse_coo, n_clusters):
     unique_pos = np.where(rows_u < cols_u)[0]
     unique_data = data_u[unique_pos]
 
-    # choose largest (n_clusters-1) edges to remove
-    to_remove = np.argsort(unique_data)[-max(0, n_clusters - 1) :]
+    cuts_needed = max(0, n_clusters - initial_components)
+    if initial_components > n_clusters:
+        print(
+            "WARNING: graph has multiple connected components; "
+            "exact k clusters is not guaranteed "
+            f"(initial_components={initial_components}, requested={n_clusters})"
+        )
+
+    # choose largest available edges to remove from the MST forest
+    to_remove = np.argsort(unique_data)[-cuts_needed:] if cuts_needed else np.array([], dtype=np.int64)
     # map back to positions in rows_u (and their symmetric counterparts)
     rem_pos = unique_pos[to_remove]
     rem_pos_pair = np.array([p + m if p < m else p - m for p in rem_pos], dtype=np.int64)
@@ -74,7 +83,7 @@ def mst_cut_clusters(A_sparse_coo, n_clusters):
 
     A_cut = coo_matrix((data_keep, (rows_keep, cols_keep)), shape=(n, n)).tocsr()
     n_comp, labels = connected_components(A_cut, directed=False)
-    return labels
+    return labels, int(initial_components), int(n_comp)
 
 
 def main():
@@ -87,7 +96,7 @@ def main():
     args = p.parse_args()
 
     if args.out is None:
-        file_name = f"cluster_labels_mst_k{args.n_clusters}.csv"
+        file_name = f"cluster_labels_mst_req{args.n_clusters}.csv"
         if args.outdir:
             args.out = f"{args.outdir}/{file_name}"
         else:
@@ -97,18 +106,20 @@ def main():
     indices, dists = load_knn(args.knn)
     n = indices.shape[0]
     A = build_symmetric_coo_from_knn(indices, dists)
-    labels = mst_cut_clusters(A, args.n_clusters)
+    labels, initial_components, actual_clusters = mst_cut_clusters(A, args.n_clusters)
 
-    # write CSV: id,label
     import csv
 
     with open(out_path, "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["id", "label"])
+        w.writerow(["row_index", "label", "algorithm", "requested_clusters", "initial_components", "actual_clusters"])
         for i, lab in enumerate(labels):
-            w.writerow([i, int(lab)])
+            w.writerow([i, int(lab), f"mst_req{args.n_clusters}", args.n_clusters, initial_components, actual_clusters])
 
-    print(f"Wrote labels -> {out_path} (n={n}, clusters={args.n_clusters})")
+    print(
+        f"Wrote labels -> {out_path} "
+        f"(n={n}, requested={args.n_clusters}, initial_components={initial_components}, actual_clusters={actual_clusters})"
+    )
 
 
 if __name__ == "__main__":

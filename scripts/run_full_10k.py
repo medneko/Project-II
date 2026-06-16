@@ -79,7 +79,7 @@ def output_paths(out_dir: Path):
         "log": out_dir / "run_full_10k.log",
         "multimodal": out_dir / "embeddings_multimodal_10k.npy",
         "knn": out_dir / "knn_k50.npz",
-        "mst": out_dir / "cluster_labels_mst_k8.csv",
+        "mst": out_dir / "cluster_labels_mst_req8.csv",
         "agg": out_dir / "cluster_labels_agg_ward_k8.csv",
         "hdbscan": out_dir / "cluster_labels_hdbscan_minsize50.csv",
         "minibatch": out_dir / "cluster_labels_minibatch_k8.csv",
@@ -102,7 +102,7 @@ def output_paths(out_dir: Path):
         "cluster_labels_gmm_k8",
         "cluster_labels_agg_ward_k8",
         "cluster_labels_hdbscan_minsize50",
-        "cluster_labels_mst_k8",
+        "cluster_labels_mst_req8",
     ]
     for name in label_names:
         paths[f"{name}_pca_png"] = out_dir / f"{name}_pca_big.png"
@@ -141,15 +141,17 @@ def main(argv=None):
         num_df = pd.read_csv(args.features)
         num_data = num_df[["sentiment_mean", "sentiment_count", "news_density"]].values
         if len(num_data) != len(text_emb):
-            print(f"WARNING: feature rows ({len(num_data)}) != embedding rows ({len(text_emb)}); keeping existing modulo fusion behavior for this routing-only change.")
-            indices = np.arange(len(text_emb)) % len(num_data)
-            num_data = num_data[indices]
-        scaler = StandardScaler()
-        num_scaled = scaler.fit_transform(num_data)
-        multimodal_emb = np.hstack((text_emb, num_scaled * 10.0))
-        np.save(paths["multimodal"], multimodal_emb)
-        print(f"Saved multimodal embeddings -> {paths['multimodal']}")
-        emb = str(paths["multimodal"])
+            print(
+                "WARNING: numeric features skipped because no safe row/key alignment is available "
+                f"(feature_rows={len(num_data)}, embedding_rows={len(text_emb)}). Using text-only embeddings."
+            )
+        else:
+            scaler = StandardScaler()
+            num_scaled = scaler.fit_transform(num_data)
+            multimodal_emb = np.hstack((text_emb, num_scaled * 10.0))
+            np.save(paths["multimodal"], multimodal_emb)
+            print(f"Saved multimodal embeddings -> {paths['multimodal']}")
+            emb = str(paths["multimodal"])
     except Exception as e:
         print(f"WARNING: multimodal fusion failed; using text embeddings. Reason: {e}")
 

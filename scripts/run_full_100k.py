@@ -75,7 +75,7 @@ def output_paths(out_dir: Path):
     return {
         "log": out_dir / "run_full_100k.log",
         "knn": out_dir / "knn_k50.npz",
-        "mst": out_dir / "cluster_labels_mst_k8.csv",
+        "mst": out_dir / "cluster_labels_mst_req8.csv",
         "agg": out_dir / "cluster_labels_agg_ward_k8.csv",
         "hdbscan": out_dir / "cluster_labels_hdbscan_minsize50.csv",
         "minibatch": out_dir / "cluster_labels_minibatch_k8.csv",
