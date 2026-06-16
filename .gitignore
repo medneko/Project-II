@@ -1,5 +1,6 @@
 # Ignore raw data and large artifacts
-data/
+data/*.npy
+data/embeddings*.npy
 TODO-data
 
 # Python envs
@@ -9,6 +10,9 @@ venv/
 # Bytecode
 __pycache__/
 *.pyc
+
+# Test/cache artifacts
+.pytest_cache/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -21,3 +25,6 @@ __pycache__/
 .env
 .env.*
 secrets*.yml
+
+# Scratch run artifacts
+report/scratch/
