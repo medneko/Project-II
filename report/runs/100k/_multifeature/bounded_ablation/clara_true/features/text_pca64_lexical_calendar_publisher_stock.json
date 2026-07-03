@@ -1,0 +1,14 @@
+{
+  "variant": "text_pca64_lexical_calendar_publisher_stock",
+  "groups": [
+    "lexical",
+    "calendar",
+    "publisher",
+    "stock"
+  ],
+  "aux_weight": 0.3,
+  "n_text_dims": 64,
+  "n_total_dims": 212,
+  "n_aux_dims": 148,
+  "notes": "row_index preserved; no modulo/repeat"
+}

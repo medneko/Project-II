@@ -1,0 +1,10 @@
+model_role,feature_space,variant,algorithm,fit_n_rows,eval_n_rows,is_sample_run,coverage_pct,n_clusters,silhouette,silhouette_metric,dbi,notes,selected_for_final,reason
+conservative main baseline,text_only,text_768_original,minibatch_k16,100000,100000,False,100.0,16,0.0734994038939476,cosine,3.046973236007796,,yes,Stable full-coverage text-only baseline.
+text-only k32 reference,text_only,text_768_original,minibatch_k32,100000,100000,False,100.0,32,0.0696062892675399,cosine,3.2506762211868714,,no,Useful k32 reference for experimental model.
+PCA64 diagnostic,multifeature,text_pca64_only,minibatch_k32,100000,100000,False,100.0,32,0.1058730483055114,cosine,3.500447040446813,,no,Tests PCA compression without auxiliary features.
+best full-100k experimental model,multifeature,text_pca64_lexical,minibatch_k32,100000,100000,False,100.0,32,0.1093880832195282,cosine,3.38151753997349,,yes,Best full-100k MiniBatch ablation result.
+compact probabilistic baseline,text_only,text_768_original,gmm_k8,100000,100000,False,100.0,8,0.0732804238796234,cosine,3.023836537443143,,yes,Full-coverage probabilistic text-only baseline.
+dense/event detection model,text_only,text_768_original,hdbscan_minsize50,100000,100000,False,20.638,105,0.5652344226837158,cosine,0.9860801375329644,,yes,High-quality dense cluster detector with partial coverage.
+bounded HDBSCAN diagnostic,multifeature,text_pca64_all_aux_w010,hdbscan_minsize50,20000,20000,True,13.31,16,0.5815016031265259,cosine,0.9879181402539756,,no,Sample-level diagnostic; not a full-100k final model.
+CLARA true diagnostic baseline,multifeature,text_pca64_lexical_calendar,clara_k16,15000,15000,True,100.0,16,0.0333989523351192,cosine,4.301400564068116,CLARA true via sklearn_extra.cluster.CLARA; n_sampling=2048; n_sampling_iter=5,no,Rerun with sklearn_extra.cluster.CLARA; still weaker than MiniBatch.
+previous all-aux w030 full multi-feature,multifeature,text_pca64_all_aux_w030,minibatch_k16,100000,100000,False,100.0,16,0.0454504378139972,cosine,4.572355182181855,,no,Represents heavier all-aux fusion at weight 0.30.

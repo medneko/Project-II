@@ -1,0 +1,21 @@
+feature_space,k,reference_seed,compared_seed,ARI,NMI,is_stability_sample,sample_n,notes
+text_768_l2,32,42,7,0.4491509528290888,0.6782261924657907,True,50000,top candidate deterministic stability sample
+text_768_l2,32,42,13,0.4100433335293796,0.662408598754502,True,50000,top candidate deterministic stability sample
+text_768_l2,32,42,21,0.4372359134916796,0.657068862775876,True,50000,top candidate deterministic stability sample
+text_768_l2,32,42,100,0.3541626248265108,0.6253262832325628,True,50000,top candidate deterministic stability sample
+text_768_l2,40,42,7,0.46343153296829487,0.6783410579924563,True,50000,top candidate deterministic stability sample
+text_768_l2,40,42,13,0.4173447808799,0.6605105706012852,True,50000,top candidate deterministic stability sample
+text_768_l2,40,42,21,0.4297574146123914,0.6649065582436854,True,50000,top candidate deterministic stability sample
+text_768_l2,40,42,100,0.39273060408917876,0.6465001594970361,True,50000,top candidate deterministic stability sample
+text_pca128_lexical_w005_l2,64,42,7,0.3190899960775747,0.5974492421792568,True,50000,top candidate deterministic stability sample
+text_pca128_lexical_w005_l2,64,42,13,0.3341837452028481,0.608094557232795,True,50000,top candidate deterministic stability sample
+text_pca128_lexical_w005_l2,64,42,21,0.33719071435963827,0.6133945789254379,True,50000,top candidate deterministic stability sample
+text_pca128_lexical_w005_l2,64,42,100,0.3173896469081668,0.5923103288681995,True,50000,top candidate deterministic stability sample
+text_768_l2,64,42,7,0.4051564097907601,0.6793744402364931,True,50000,top candidate deterministic stability sample
+text_768_l2,64,42,13,0.41951546391480493,0.6865287826012063,True,50000,top candidate deterministic stability sample
+text_768_l2,64,42,21,0.4158128308489393,0.6852496498348434,True,50000,top candidate deterministic stability sample
+text_768_l2,64,42,100,0.39257330969593873,0.677527722317202,True,50000,top candidate deterministic stability sample
+text_768_l2,48,42,7,0.42967341808504306,0.6806686317950128,True,50000,top candidate deterministic stability sample
+text_768_l2,48,42,13,0.4134020467279345,0.6690712813396572,True,50000,top candidate deterministic stability sample
+text_768_l2,48,42,21,0.3825503375872952,0.6584582126545144,True,50000,top candidate deterministic stability sample
+text_768_l2,48,42,100,0.40481552527536296,0.6687291771677908,True,50000,top candidate deterministic stability sample

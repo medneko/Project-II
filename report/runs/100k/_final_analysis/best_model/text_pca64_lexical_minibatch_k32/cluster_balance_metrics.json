@@ -1,0 +1,15 @@
+{
+  "n_clusters": 32,
+  "entropy": 3.387269321859571,
+  "normalized_entropy": 0.977359330560425,
+  "gini": 0.21288250000000009,
+  "top_1_cluster_pct": 6.0280000000000005,
+  "top_3_cluster_pct": 15.767000000000001,
+  "top_5_cluster_pct": 24.532999999999998,
+  "min_size": 949,
+  "median_size": 3283.5,
+  "max_size": 6028,
+  "largest_cluster_pct": 6.0280000000000005,
+  "n_clusters_size_lt_100": 0,
+  "n_clusters_size_lt_500": 0
+}

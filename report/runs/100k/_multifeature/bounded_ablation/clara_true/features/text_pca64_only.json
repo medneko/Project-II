@@ -1,0 +1,9 @@
+{
+  "variant": "text_pca64_only",
+  "groups": [],
+  "aux_weight": 0.0,
+  "n_text_dims": 64,
+  "n_total_dims": 64,
+  "n_aux_dims": 0,
+  "notes": "row_index preserved; no modulo/repeat"
+}

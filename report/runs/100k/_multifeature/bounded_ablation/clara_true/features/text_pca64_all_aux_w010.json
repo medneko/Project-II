@@ -1,0 +1,15 @@
+{
+  "variant": "text_pca64_all_aux_w010",
+  "groups": [
+    "lexical",
+    "calendar",
+    "publisher",
+    "stock",
+    "lexicon_sentiment_risk"
+  ],
+  "aux_weight": 0.1,
+  "n_text_dims": 64,
+  "n_total_dims": 218,
+  "n_aux_dims": 154,
+  "notes": "row_index preserved; no modulo/repeat"
+}

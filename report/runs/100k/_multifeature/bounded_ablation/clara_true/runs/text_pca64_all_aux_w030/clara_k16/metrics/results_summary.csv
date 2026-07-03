@@ -1,0 +1,2 @@
+variant,algorithm,feature_space,fit_n_rows,eval_n_rows,is_sample_run,n_total_dims,n_text_dims,n_aux_dims,aux_groups,aux_weight,coverage_pct,n_clusters,silhouette,silhouette_metric,silhouette_sample_size,dbi,notes
+text_pca64_all_aux_w030,clara_k16,text_pca64_all_aux_w030,15000,15000,True,218,64,154,lexical+calendar+publisher+stock+lexicon_sentiment_risk,0.3,100.0,16,0.016254568472504616,cosine,10000,4.570432754472227,CLARA true via sklearn_extra.cluster.CLARA; n_sampling=2048; n_sampling_iter=5

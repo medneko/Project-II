@@ -1,0 +1,12 @@
+{
+  "variant": "text_pca64_lexical_calendar",
+  "groups": [
+    "lexical",
+    "calendar"
+  ],
+  "aux_weight": 0.3,
+  "n_text_dims": 64,
+  "n_total_dims": 89,
+  "n_aux_dims": 25,
+  "notes": "row_index preserved; no modulo/repeat"
+}

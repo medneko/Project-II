@@ -1,0 +1,7 @@
+{
+  "variant": "text_pca64_all_aux_w010",
+  "algorithm": "clara_k16",
+  "sample_kind": "clara",
+  "sample_n": 15000,
+  "algorithm_note": "CLARA true via sklearn_extra.cluster.CLARA; n_sampling=2048; n_sampling_iter=5"
+}
