@@ -1,0 +1,7 @@
+\section{Thảo luận}
+
+Kết quả cho thấy lexical multi-feature nhẹ có thể cải thiện \algo{MiniBatchKMeans} khi \(k\) được chọn cẩn thận. Tuy nhiên, metadata-heavy fusion có thể làm cụm bị chi phối bởi publisher hoặc stock, và \(k\) quá lớn như \model{minibatch_k96} làm tăng fragmentation dù một số metric nội tại trông tốt.
+
+L2 normalization cải thiện DBI và stability trong một số trường hợp, nhưng negative silhouette cao khiến cấu hình \model{text_768_l2} không thay thế được mô hình experimental. PCA64 tuned \algo{HDBSCAN} được chọn cho dense/event detection sau validation full 100k, nhưng kết luận cần kèm caveat rằng một số nhánh HDBSCAN 768D bị timeout.
+
+CLARA true đã được chạy qua \model{sklearn_extra.cluster.CLARA}, không phải fallback. Kết quả tốt nhất chỉ giữ vai trò diagnostic baseline vì silhouette và DBI yếu hơn \algo{MiniBatchKMeans}.

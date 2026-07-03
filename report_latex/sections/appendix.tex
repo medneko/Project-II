@@ -1,0 +1,150 @@
+\section{Phụ lục}
+\label{app:appendix}
+
+\subsection{Mã nguồn và repository}
+
+Mã nguồn của đồ án được lưu tại repository GitHub:
+
+\begin{center}
+\href{https://github.com/medneko/Project-II}{\model{https://github.com/medneko/Project-II}}
+\end{center}
+
+Repository chứa các script phục vụ tiền xử lý dữ liệu, trích xuất đặc trưng, sinh embedding, chạy phân cụm, tính metric, sinh hình và tổng hợp bảng kết quả. Báo cáo LaTeX nằm trong thư mục \model{report_latex/} và được thiết kế để biên dịch bằng \algo{XeLaTeX} trên Overleaf.
+
+Một số file dữ liệu lớn và artifact trung gian không được đưa trực tiếp vào project LaTeX, ví dụ \model{.npy}, label CSV lớn hoặc các file kết quả trung gian dung lượng cao. Báo cáo chỉ sử dụng các bảng, hình và summary đã được chọn lọc từ quá trình thực nghiệm.
+
+\subsection{Nguồn kết quả sử dụng trong báo cáo}
+
+Các kết quả trong báo cáo được tổng hợp từ hai nguồn chính:
+
+\begin{itemize}
+    \item \textbf{Nguồn mã nguồn và README của repository}: mô tả pipeline tổng quát, cách chạy tiền xử lý, sinh embedding, fusion, phân cụm và các nhóm metric đánh giá.
+    \item \textbf{Kết quả thực nghiệm đã sinh trong project}: gồm các file summary, CSV, bảng LaTeX và hình trong thư mục \model{report/runs/100k/}.
+\end{itemize}
+
+Các file kết quả quan trọng được dùng để viết phần kết quả và thảo luận gồm:
+
+\begin{itemize}
+    \item \model{final_model_comparison_updated.csv}
+    \item \model{_k_metric_exploration/metrics/k_sweep_summary.csv}
+    \item \model{_k_metric_exploration/metrics/k_sweep_stability.csv}
+    \item \model{_hdbscan_tuning_compact/metrics/hdbscan_tuning_summary.csv}
+    \item \model{_hdbscan_event_validation/metrics/hdbscan_event_validation_summary.csv}
+    \item \model{_multifeature/bounded_ablation/metrics/bounded_ablation_summary.csv}
+    \item \model{gmm_k16/metrics/results_summary.csv}
+    \item \model{clara_k16/metrics/results_summary.csv}
+\end{itemize}
+
+Ngoài ra, bảng so sánh mở rộng các thuật toán được sinh từ script:
+
+\begin{center}
+\model{scripts/build_extended_algorithm_comparison_100k.py}
+\end{center}
+
+Script này chỉ đọc các summary và CSV có sẵn, không chạy lại clustering, không ghi vào thư mục \model{data/} và không chỉnh sửa các thư mục kết quả đã duyệt.
+
+\subsection{Các artifact hỗ trợ báo cáo mở rộng}
+
+Bộ hỗ trợ báo cáo mở rộng gồm các file sau:
+
+\begin{itemize}
+    \item \model{report/runs/100k/_final_analysis/metrics/extended_algorithm_comparison.csv}
+    \item \model{report/runs/100k/_final_analysis/metrics/extended_algorithm_comparison.md}
+    \item \model{report/runs/100k/_final_analysis/tables/extended_algorithm_comparison.tex}
+    \item \model{report/runs/100k/_final_analysis/docs/algorithm_family_comments.md}
+    \item \model{report/runs/100k/_final_analysis/docs/report_ready_algorithm_comparison.tex}
+\end{itemize}
+
+Các hình so sánh mở rộng được sinh trong thư mục:
+
+\begin{center}
+\model{report/runs/100k/_final_analysis/charts/algorithm_comparison/}
+\end{center}
+
+Các hình chính gồm:
+
+\begin{itemize}
+    \item \model{full_coverage_silhouette_comparison.png}
+    \item \model{full_coverage_dbi_comparison.png}
+    \item \model{model_scatter_silhouette_vs_dbi.png}
+    \item \model{event_models_coverage_comparison.png}
+    \item \model{event_models_cluster_count_comparison.png}
+    \item \model{stability_ari_comparison.png}
+    \item \model{metadata_warning_comparison.png}
+    \item \model{cluster_balance_largest_cluster_pct.png}
+\end{itemize}
+
+\subsection{Bảng so sánh mở rộng các mô hình}
+
+Bảng~\ref{tab:extended_algorithm_comparison} trình bày đầy đủ hơn các mô hình được chọn, các baseline chính và các cấu hình diagnostic/reference không được chọn. Bảng này được đặt ở phụ lục vì số lượng mô hình tương đối lớn; phần kết quả chính chỉ trình bày nhận xét tổng hợp và một số biểu đồ quan trọng.
+
+\input{tables/extended_algorithm_comparison}
+
+\subsection{Mapping giữa README và báo cáo}
+
+README của repository mô tả pipeline tổng quát của dự án, từ tiền xử lý dữ liệu đến phân cụm và đánh giá. Báo cáo hiện tại kế thừa pipeline đó, nhưng được cập nhật theo kết quả thực nghiệm cuối cùng trên tập 100 nghìn dòng.
+
+Một số điểm đã được điều chỉnh so với README giai đoạn đầu:
+
+\begin{itemize}
+    \item README ban đầu mô tả mục tiêu theo hướng \textit{đa thể thức}. Báo cáo hiện tại diễn giải thận trọng hơn: dự án chủ yếu là phân cụm trên không gian vector đa đặc trưng, chưa có ảnh, âm thanh hoặc video thực sự.
+    \item Một số KPI ban đầu như ngưỡng \metric{silhouette} hoặc \metric{stability} chỉ được xem là mục tiêu kỳ vọng, không phải điều kiện cứng để kết luận mô hình cuối.
+    \item Báo cáo không chọn mô hình theo một metric duy nhất. Quyết định mô hình dựa trên tổng hợp \metric{silhouette}, \metric{DBI}, coverage, noise ratio, cluster balance, stability và hậu kiểm metadata.
+    \item Các hình \algo{PCA}/\algo{UMAP} chỉ được dùng như trực quan hóa chẩn đoán, không dùng làm bằng chứng chính để chọn mô hình.
+\end{itemize}
+
+\subsection{Mapping giữa mô hình và vai trò sử dụng}
+
+Các mô hình chính trong báo cáo được phân vai như sau:
+
+\begin{table}[H]
+\centering
+\small
+\caption{Mapping giữa mô hình và vai trò sử dụng trong báo cáo.}
+\label{tab:appendix-model-role-mapping}
+\begin{tabularx}{\textwidth}{L{0.42\textwidth} Y}
+\toprule
+\textbf{Mô hình} & \textbf{Vai trò trong báo cáo} \\
+\midrule
+\tablemodel{text_768_original + minibatch_k16} & Baseline thận trọng cho phân cụm phủ toàn bộ dữ liệu. \\
+\tablemodel{text_pca64_lexical + minibatch_k40} & Mô hình thực nghiệm được chọn cho nhánh full-coverage. \\
+\tablemodel{text_pca64_only + HDBSCAN(min_cluster_size=30, min_samples=20, leaf)} & Mô hình phát hiện cụm dày hoặc cụm dạng sự kiện. \\
+\tablemodel{text_pca64_only + minibatch_k96} & Cấu hình tham chiếu rủi ro cao, không phải mô hình cuối. \\
+\tablemodel{text_768_l2 + minibatch_k40} & Ứng viên representation tuning, không thay thế mô hình cuối. \\
+\tablemodel{text_768_original + gmm_k8} & Baseline xác suất để đối chiếu với \algo{MiniBatchKMeans}. \\
+\tablemodel{text_pca64_lexical_calendar + clara_k16} & Diagnostic baseline theo hướng medoid-based. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Quy trình trực quan hóa PCA/UMAP}
+
+Các hình trực quan hóa \algo{PCA} và \algo{UMAP} được sinh cho mô hình \model{text_pca64_lexical + minibatch_k40}. Ma trận đầu vào là \model{text_pca64_lexical}, gồm 64 chiều biểu diễn ngữ nghĩa sau \algo{PCA} và 13 đặc trưng lexical, tổng cộng 77 chiều.
+
+Gọi ma trận đặc trưng là:
+
+\begin{equation*}
+X \in \mathbb{R}^{n \times 77}.
+\end{equation*}
+
+Với \algo{PCA}, dữ liệu được ánh xạ sang không gian thấp chiều bằng phép chiếu tuyến tính:
+
+\begin{equation*}
+Z_{\mathrm{PCA}} = \mathrm{PCA}(X).
+\end{equation*}
+
+Với \algo{UMAP}, dữ liệu được ánh xạ sang không gian thấp chiều bằng phương pháp phi tuyến nhằm bảo toàn tương đối cấu trúc lân cận:
+
+\begin{equation*}
+Z_{\mathrm{UMAP}} = \mathrm{UMAP}(X).
+\end{equation*}
+
+Trong cả hai trường hợp, màu của điểm dữ liệu được lấy từ nhãn cụm của \algo{MiniBatchKMeans} với \(K=40\). Như vậy, trực quan hóa không chạy lại phân cụm, mà chỉ chiếu dữ liệu xuống 2D hoặc 3D và tô màu theo nhãn đã có.
+
+Do dữ liệu tin tức tài chính có nhiều chủ đề chồng lấn và mô hình được đánh giá trong không gian nhiều chiều, các hình \algo{PCA}/\algo{UMAP} không nhất thiết cho thấy cụm tách biệt rõ ràng. Vì vậy, các hình này chỉ được dùng làm artifact chẩn đoán và demo, không dùng làm tiêu chí chọn mô hình chính.
+
+\subsection{Ghi chú về khả năng tái lập}
+
+Để tái lập kết quả ở mức báo cáo, người đọc cần có các file summary, CSV và hình đã được sinh trong thư mục \model{report/runs/100k/}. Một số bước như sinh embedding, chạy \algo{HDBSCAN} trên không gian 768 chiều hoặc sweep nhiều cấu hình có thể tốn nhiều thời gian và tài nguyên.
+
+Vì vậy, báo cáo ưu tiên sử dụng các kết quả đã sinh và đã kiểm tra thay vì yêu cầu chạy lại toàn bộ pipeline từ đầu. Cách làm này giúp project LaTeX nhẹ hơn, dễ biên dịch hơn và phù hợp với môi trường Overleaf.

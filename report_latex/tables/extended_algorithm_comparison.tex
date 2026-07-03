@@ -1,0 +1,35 @@
+\begin{table}[htbp]
+\centering
+\scriptsize
+\caption{So sánh mở rộng các mô hình phân cụm trên tập 100k.}
+\label{tab:extended_algorithm_comparison}
+\begin{tabularx}{\textwidth}{L{0.17\textwidth} L{0.31\textwidth} L{0.24\textwidth} r r r r}
+\toprule
+Nhóm & Mô hình & Vai trò & Coverage & Số cụm & Sil. & DBI \\
+\midrule
+full-coverage & \tablemodel{text_768_original + gmm_k8} & Probabilistic baseline & 100.00 & 8 & 0.0733 & 3.0238 \\
+full-coverage & \tablemodel{text_pca64_lexical + minibatch_k40} & Selected experimental & 100.00 & 40 & 0.1065 & 3.3463 \\
+full-coverage & \tablemodel{text_768_original + minibatch_k16} & Conservative baseline & 100.00 & 16 & 0.0632 & 3.0854 \\
+full-coverage & \tablemodel{text_pca64_all_aux_w005 + minibatch_k32} & Low-weight all-aux reference & 100.00 & 32 & 0.0997 & 3.2368 \\
+full-coverage & \tablemodel{text_pca64_all_aux_w030 + minibatch_k32} & Heavier metadata reference & 100.00 & 32 & 0.0927 & 3.7908 \\
+full-coverage & \tablemodel{text_pca64_lexical_calendar_publisher_stock + minibatch_k32} & Metadata-heavy reference & 100.00 & 32 & 0.0894 & 3.8401 \\
+\midrule
+event detection & \tablemodel{text_pca64_lexical + hdbscan_mcs30_ms20_leaf} & Lexical compact candidate & 17.99 & 114 & 0.6120 & 0.9944 \\
+event detection & \tablemodel{text_pca64_only + hdbscan} & Selected event model & 20.12 & 219 & 0.6086 & 1.0260 \\
+event detection & \tablemodel{text_768_original + hdbscan} & Previous event baseline & 20.64 & 105 & 0.5652 & 0.9861 \\
+event detection & \tablemodel{text_pca64_only + hdbscan_mcs50_eom_same_sample} & Same-sample PCA64 baseline & 23.20 & 28 & 0.2236 & 1.0837 \\
+event detection & \tablemodel{text_pca64_only + hdbscan_mcs50_ms20_eom} & Same-sample mcs50/eom reference & 20.81 & 59 & 0.5544 & 1.2299 \\
+\midrule
+diagnostic / reference & \tablemodel{text_pca64_lexical_calendar + clara_k16} & Best CLARA true diagnostic & 100.00 & 16 & 0.0334 & 4.3014 \\
+diagnostic / reference & \tablemodel{text_768_original + clara_k16} & Direct CLARA reference & 100.00 & 16 & 0.0146 & 4.3889 \\
+diagnostic / reference & \tablemodel{text_768_original + gmm_k16} & Direct GMM reference & 100.00 & 16 & 0.0327 & 2.9701 \\
+diagnostic / reference & \tablemodel{text_pca64_only + gmm_k16} & Sampled bounded GMM reference & 100.00 & 16 & 0.0373 & 4.1304 \\
+diagnostic / reference & \tablemodel{text_pca64_lexical + minibatch_k64} & Fragmentation watch & 100.00 & 64 & 0.1035 & 3.0478 \\
+diagnostic / reference & \tablemodel{text_768_original + minibatch_k32} & Higher-k text baseline & 100.00 & 32 & 0.0836 & 3.2289 \\
+diagnostic / reference & \tablemodel{text_pca64_lexical + minibatch_k48} & Strong k-sweep reference & 100.00 & 48 & 0.1109 & 3.1345 \\
+diagnostic / reference & \tablemodel{text_pca64_lexical + minibatch_k32} & Previous experimental candidate & 100.00 & 32 & 0.1091 & 3.3961 \\
+diagnostic / reference & \tablemodel{text_768_l2 + minibatch_k40} & Representation tuning reference & 100.00 & 40 & 0.0804 & 3.2529 \\
+diagnostic / reference & \tablemodel{text_pca64_only + minibatch_k96} & Risky high-k reference & 100.00 & 96 & 0.1161 & 2.9968 \\
+\bottomrule
+\end{tabularx}
+\end{table}

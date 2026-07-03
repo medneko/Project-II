@@ -1,0 +1,5 @@
+\section{Phương pháp thực hiện}
+
+Pipeline thực nghiệm gồm các bước: tiền xử lý dữ liệu, sinh embedding, xây dựng không gian đặc trưng, chạy thuật toán phân cụm, tính metric, hậu kiểm metadata và tổng hợp báo cáo. Các không gian đặc trưng chính gồm embedding gốc 768 chiều, PCA64 của embedding, và các biến thể có thêm đặc trưng lexical hoặc metadata có trọng số.
+
+Các thuật toán được đánh giá theo hai vai trò. Với full-coverage clustering, mô hình cần gán cụm cho toàn bộ dữ liệu và giữ cân bằng kích thước cụm hợp lý. Với event/dense detection, \algo{HDBSCAN} được đánh giá theo chất lượng cụm dày, coverage, noise ratio và negative silhouette thay vì yêu cầu coverage 100\%.

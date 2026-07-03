@@ -1,0 +1,13 @@
+\section{Thiết kế thực nghiệm}
+
+Các thực nghiệm được tổ chức theo từng nhóm để giữ phạm vi đánh giá rõ ràng và tránh sweep quá rộng sau giai đoạn tuning chính:
+
+\begin{itemize}
+  \item MiniBatch k-sweep trên các không gian biểu diễn chính để chọn baseline và ứng viên full-coverage.
+  \item Representation tuning để kiểm tra tác động của PCA, L2 normalization và đặc trưng lexical.
+  \item Bounded multi-feature ablation để đánh giá tác động của các đặc trưng phụ như calendar, publisher, stock và lexicon.
+  \item Compact HDBSCAN tuning cho vai trò phát hiện cụm dày hoặc sự kiện, không thay thế mô hình full-coverage.
+  \item CLARA true và GMM để tạo baseline/diagnostic reference cho các họ thuật toán khác.
+\end{itemize}
+
+Các metric chính gồm \metric{silhouette}, \metric{DBI}, coverage, noise ratio, negative silhouette, cluster balance, stability ARI/NMI và các cảnh báo metadata dominance.

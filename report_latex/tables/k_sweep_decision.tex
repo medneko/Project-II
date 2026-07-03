@@ -1,0 +1,16 @@
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Một số cấu hình MiniBatch nổi bật trong k-sweep.}
+\label{tab:k-sweep-decision}
+\begin{tabularx}{\textwidth}{L{0.34\textwidth} r r r r r Y}
+\toprule
+Mô hình & Coverage & Số cụm & Silhouette & DBI & Largest & Ghi chú \\
+\midrule
+\tablemodel{text_768_original + minibatch_k16} & 100.00 & 16 & 0.0632 & 3.0854 & 10.01 & Baseline thận trọng. \\
+\tablemodel{text_pca64_lexical + minibatch_k32} & 100.00 & 32 & 0.1091 & 3.3961 & 6.09 & Ứng viên cũ, bị k40 thay thế. \\
+\tablemodel{text_pca64_lexical + minibatch_k40} & 100.00 & 40 & 0.1065 & 3.3463 & 5.17 & Selected experimental model. \\
+\tablemodel{text_pca64_only + minibatch_k96} & 100.00 & 96 & 0.1161 & 2.9968 & 2.40 & Risky high-k reference. \\
+\bottomrule
+\end{tabularx}
+\end{table}

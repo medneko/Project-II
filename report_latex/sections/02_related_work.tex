@@ -1,0 +1,5 @@
+\section{Cơ sở lý thuyết và nghiên cứu liên quan}
+
+Phân cụm văn bản tài chính thường dựa trên biểu diễn embedding để chuyển các headline ngắn thành vector số. Các thuật toán centroid-based như \algo{MiniBatchKMeans} phù hợp khi cần gán nhãn cho toàn bộ dữ liệu và kiểm soát số cụm. Các mô hình xác suất như \algo{GMM} cung cấp một baseline khác dựa trên phân phối, trong khi \algo{HDBSCAN} phù hợp hơn với việc phát hiện các vùng dày đặc và cho phép một phần điểm dữ liệu được xem là nhiễu.
+
+Trong bối cảnh dữ liệu tin tức, trực quan hóa \algo{PCA} hoặc \algo{UMAP} chỉ nên được xem là công cụ chẩn đoán. Cấu trúc cụm trong không gian 2D/3D có thể khác đáng kể so với không gian embedding nhiều chiều, nên quyết định mô hình cần dựa trên các metric định lượng và kiểm tra diễn giải.

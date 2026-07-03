@@ -1,0 +1,68 @@
+\section{Kết quả thực nghiệm}
+
+Bảng~\ref{tab:final-models} tóm tắt các quyết định cuối cùng. Các mô hình được phân vai như sau:
+
+\begin{itemize}
+  \item Conservative full-coverage baseline: \model{text_768_original + minibatch_k16}.
+  \item Best experimental full-coverage model: \model{text_pca64_lexical + minibatch_k40}.
+  \item Event/dense detection model: \model{text_pca64_only + HDBSCAN(min_cluster_size=30, min_samples=20, cluster_selection_method=leaf)}.
+  \item High-silhouette risky reference: \model{text_pca64_only + minibatch_k96}, chỉ dùng để tham chiếu về rủi ro phân mảnh.
+\end{itemize}
+
+\input{tables/final_model_comparison}
+\input{tables/hdbscan_event_validation}
+
+\subsection{So sánh mở rộng giữa các thuật toán}
+
+Bảng so sánh đầy đủ giữa các mô hình được chọn, các baseline và các cấu hình diagnostic/reference được trình bày trong Phụ lục, Bảng~\ref{tab:extended_algorithm_comparison}. Trong phần chính, báo cáo chỉ giữ lại các nhận xét tổng hợp và một số biểu đồ quan trọng để tránh làm nội dung quá tải.
+
+\input{sections/report_ready_algorithm_comparison}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{full_coverage_silhouette_comparison.png}
+\caption{So sánh \metric{silhouette} của các mô hình full-coverage và reference quan trọng.}
+\label{fig:full-coverage-silhouette}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{full_coverage_dbi_comparison.png}
+\caption{So sánh \metric{DBI} của các mô hình full-coverage và reference quan trọng.}
+\label{fig:full-coverage-dbi}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\linewidth]{model_scatter_silhouette_vs_dbi.png}
+\caption{Quan hệ giữa \metric{silhouette} và \metric{DBI} theo family thuật toán.}
+\label{fig:silhouette-dbi-scatter}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{event_models_coverage_comparison.png}
+\caption{Coverage của các mô hình \algo{HDBSCAN} trong vai trò event/dense detection.}
+\label{fig:event-coverage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{event_models_cluster_count_comparison.png}
+\caption{Số cụm của các mô hình \algo{HDBSCAN} trong vai trò event/dense detection.}
+\label{fig:event-clusters}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{k_sweep_cluster_balance_text_pca64_lexical.png}
+\caption{Cân bằng kích thước cụm theo \(k\) cho \model{text_pca64_lexical}.}
+\label{fig:k-balance}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{selected_minibatch_umap_2d.png}
+\caption{Trực quan \algo{UMAP} 2D cho mô hình MiniBatch được phân tích sâu. Hình này chỉ dùng như artifact chẩn đoán.}
+\label{fig:selected-umap}
+\end{figure}

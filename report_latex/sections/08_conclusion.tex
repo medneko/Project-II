@@ -1,0 +1,5 @@
+\section{Kết luận}
+
+Báo cáo chọn \model{text_768_original + minibatch_k16} làm conservative full-coverage baseline, \model{text_pca64_lexical + minibatch_k40} làm selected experimental full-coverage model, và \model{text_pca64_only + HDBSCAN(min_cluster_size=30, min_samples=20, leaf)} làm event/dense detection model. \model{text_pca64_only + minibatch_k96} được giữ làm high-silhouette risky reference, không phải mô hình cuối.
+
+Hạn chế chính gồm stability chưa quá cao, publisher dominance trong một số cụm, timeout cho HDBSCAN 768D, chưa có nhãn market-response và chưa có tín hiệu multimodal thực sự. Kết luận phù hợp là \algo{MiniBatchKMeans} trên không gian \model{text_pca64_lexical} là lựa chọn thực nghiệm tốt nhất cho phân cụm phủ toàn bộ dữ liệu, trong khi \algo{HDBSCAN} tuned trên \model{text_pca64_only} nên được dùng riêng cho phát hiện cụm dày hoặc cụm dạng sự kiện.

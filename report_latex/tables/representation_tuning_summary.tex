@@ -1,0 +1,15 @@
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Tóm tắt một số ứng viên representation tuning.}
+\label{tab:representation-tuning-summary}
+\begin{tabularx}{\textwidth}{L{0.34\textwidth} r r r r r r Y}
+\toprule
+Mô hình & Coverage & Số cụm & Silhouette & DBI & Neg. sil. & NMI & Ghi chú \\
+\midrule
+\tablemodel{text_pca64_lexical + minibatch_k40} & 100.00 & 40 & 0.1065 & 3.3463 & -- & 0.5707 & Selected experimental full-coverage. \\
+\tablemodel{text_768_l2 + minibatch_k40} & 100.00 & 40 & 0.0804 & 3.2529 & 40.93 & 0.6626 & DBI/stability khá hơn ở vài điểm nhưng negative silhouette cao. \\
+\tablemodel{text_pca64_only + minibatch_k96} & 100.00 & 96 & 0.1161 & 2.9968 & -- & 0.6468 & High-k reference, rủi ro phân mảnh. \\
+\bottomrule
+\end{tabularx}
+\end{table}

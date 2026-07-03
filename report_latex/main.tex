@@ -1,0 +1,65 @@
+% !TEX program = xelatex
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{fontspec}
+\usepackage[main=vietnamese,english]{babel}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+
+\setmainfont{TeX Gyre Termes}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{DejaVu Sans Mono}
+
+\addto\captionsvietnamese{
+  \renewcommand{\contentsname}{Mục lục}
+  \renewcommand{\tablename}{Bảng}
+  \renewcommand{\figurename}{Hình}
+  \renewcommand{\refname}{Tài liệu tham khảo}
+  \renewcommand{\appendixname}{Phụ lục}
+}
+
+\newcommand{\codesize}{\footnotesize}
+\newcommand{\tablecodesize}{\scriptsize}
+\newcommand{\model}[1]{\texttt{\small\detokenize{#1}}}
+\newcommand{\algo}[1]{\textsc{#1}}
+\newcommand{\metric}[1]{\textit{#1}}
+\newcommand{\tablemodel}[1]{%
+  \begingroup
+  \tablecodesize\ttfamily
+  \Urlmuskip=0mu plus 2mu\relax
+  \nolinkurl{#1}%
+  \endgroup
+}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\graphicspath{{figures/}}
+\captionsetup{font=small,labelfont=bf}
+
+\begin{document}
+\input{sections/00_cover}
+\tableofcontents
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_dataset}
+\input{sections/04_methodology}
+\input{sections/05_experiments}
+\input{sections/06_results}
+\input{sections/07_discussion}
+\input{sections/08_conclusion}
+\appendix
+\input{sections/appendix}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

@@ -1,0 +1,15 @@
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Kiểm chứng HDBSCAN cho phát hiện cụm dày/sự kiện.}
+\label{tab:hdbscan-event-validation}
+\begin{tabularx}{\textwidth}{L{0.28\textwidth} r r r r r r r Y}
+\toprule
+Cấu hình & Fit rows & Coverage & Noise & Số cụm & Sil. cos & DBI & Neg. sil. & Ghi chú \\
+\midrule
+\tablemodel{text_pca64_only, mcs=30, ms=20, leaf} & 100000 & 20.12 & 79.88 & 219 & 0.6086 & 1.0260 & 0.69 & Selected event/dense detection model. \\
+\tablemodel{text_768_original, hdbscan_minsize50} & 100000 & 20.64 & 79.36 & 105 & 0.5652 & 0.9861 & -- & Historical text-only baseline. \\
+\tablemodel{text_pca64_only, mcs=50, eom} & 50000 & 23.20 & 76.80 & 28 & 0.2236 & 1.0837 & 55.09 & Same-sample PCA64 baseline, kém hơn rõ về silhouette. \\
+\bottomrule
+\end{tabularx}
+\end{table}

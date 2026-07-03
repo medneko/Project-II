@@ -1,0 +1,12 @@
+% Extended algorithm comparison snippet for Overleaf.
+\paragraph{So sánh mở rộng các thuật toán.}
+Bảng~\ref{tab:extended_algorithm_comparison} tổng hợp thêm các mô hình không được chọn bên cạnh các mô hình cuối cùng. Mục tiêu của bảng không phải là xếp hạng mọi thuật toán bằng một metric duy nhất, mà là làm rõ vai trò của từng nhóm mô hình: full-coverage, event detection và diagnostic/reference. Với những metric không tương thích hoặc không có sẵn, bảng dùng ký hiệu ``--'' để tránh diễn giải quá mức.
+
+\begin{itemize}
+    \item \textbf{MiniBatchKMeans} là lựa chọn phù hợp nhất cho full-coverage vì gán cụm cho toàn bộ 100k điểm, chạy ổn định và có thể kiểm soát mức độ phân mảnh bằng tham số $k$. Baseline \texttt{text\_768\_original + minibatch\_k16} giữ vai trò thận trọng, còn \texttt{text\_pca64\_lexical + minibatch\_k40} là mô hình thực nghiệm được chọn nhờ cân bằng tốt hơn giữa silhouette, DBI và kích thước cụm.
+    \item \textbf{GMM} là baseline xác suất có ích để đối chiếu với KMeans, nhưng không vượt rõ MiniBatchKMeans trên dữ liệu này. Vì vậy GMM được giữ làm mô hình tham chiếu thay vì mô hình chính.
+    \item \textbf{HDBSCAN} không nhằm coverage 100\%, mà dùng để phát hiện cụm dày đặc hoặc cụm dạng sự kiện. Cấu hình \texttt{text\_pca64\_only + HDBSCAN(min\_cluster\_size=30, min\_samples=20, leaf)} được chọn vì silhouette cao, negative silhouette thấp và không có dấu hiệu collapse trong kiểm định full 100k.
+    \item \textbf{CLARA} có giá trị như diagnostic baseline medoid-based. Tuy nhiên các kết quả CLARA true vẫn yếu hơn MiniBatchKMeans và chỉ chạy ở mức sample, nên không được chọn làm mô hình cuối cùng.
+\end{itemize}
+
+Tóm lại, MiniBatchKMeans được chọn cho nhánh full-coverage vì cân bằng tốt giữa độ phủ, chất lượng cụm và khả năng diễn giải. HDBSCAN được chọn riêng cho event detection vì nó phát hiện các vùng dày đặc thay vì cố gắng gán nhãn cho mọi điểm. GMM và CLARA đóng vai trò baseline/diagnostic, còn các cấu hình high-$k$ như \texttt{minibatch\_k96} chỉ nên xem là tham chiếu vì rủi ro phân mảnh và metadata dominance cao hơn.
